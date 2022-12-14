@@ -3,19 +3,20 @@ package dasha;
 import jakarta.persistence.*;
 
 @Entity
+@org.hibernate.annotations.NamedQuery(name = "MasterMaterials.all", query = "from MasterMaterials p")
 @Table(name = "master_materials", schema = "public", catalog = "salon")
 public class MasterMaterials {
     @Basic
     @Column(name = "count")
     private Integer count;
+    @Id
     @ManyToOne
     @JoinColumn(name = "master_id", referencedColumnName = "id")
     private Master masterByMasterId;
+    @Id
     @ManyToOne
     @JoinColumn(name = "materials_id", referencedColumnName = "id")
     private Materials materialsByMaterialsId;
-    @Id
-    private Long id;
 
 
     public Integer getCount() {
@@ -55,11 +56,11 @@ public class MasterMaterials {
         this.materialsByMaterialsId = materialsByMaterialsId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
+    @Override
+    public String toString() {
+        return materialsByMaterialsId.getName() + ", " + count +
+                " " +masterByMasterId.getStaffByStaffId().getSurname() +
+                " " +masterByMasterId.getStaffByStaffId().getName() +
+                " " +masterByMasterId.getStaffByStaffId().getPatronymic();
     }
 }

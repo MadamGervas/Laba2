@@ -3,7 +3,7 @@ package dasha;
 import jakarta.persistence.*;
 
 import java.sql.Date;
-import java.util.Collection;
+import java.util.List;
 
 @Entity
 @org.hibernate.annotations.NamedQuery(name = "Staff.byName", query = "From Staff p where upper(p.name) like concat('%', upper(?1), '%')")
@@ -41,7 +41,7 @@ public class Staff {
     @Column(name = "salary")
     private Integer salary;
     @OneToMany(mappedBy = "staffByStaffId")
-    private Collection<Master> mastersById;
+    private List<Master> mastersById;
     @ManyToOne
     @JoinColumn(name = "transfer_id", referencedColumnName = "id")
     private StaffTransfer staffTransferByTransferId;
@@ -143,11 +143,11 @@ public class Staff {
         return result;
     }
 
-    public Collection<Master> getMastersById() {
+    public List<Master> getMastersById() {
         return mastersById;
     }
 
-    public void setMastersById(Collection<Master> mastersById) {
+    public void setMastersById(List<Master> mastersById) {
         this.mastersById = mastersById;
     }
 
@@ -161,17 +161,12 @@ public class Staff {
 
     @Override
     public String toString() {
-        return "Staff{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                ", address='" + address + '\'' +
-                ", birthDate=" + dateOfBirth +
-                ", position='" + position + '\'' +
-                ", salary=" + salary +
-                ", mastersById=" + mastersById +
-                ", staffTransferByTransferId=" + staffTransferByTransferId +
-                '}';
+        return surname +
+                " " + name +
+                " " + patronymic +
+                ", " + address +
+                ", " + dateOfBirth +
+                ", " + position +
+                ", " + salary + " rub";
     }
 }

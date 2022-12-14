@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.util.Collection;
 
 @Entity
+@org.hibernate.annotations.NamedQuery(name = "Service.byService", query = "From Service p where upper(p.service) like concat('%', upper(?1), '%')")
+@org.hibernate.annotations.NamedQuery(name = "Service.byCost", query = "from Service p where cost = ?1")
+@org.hibernate.annotations.NamedQuery(name = "Service.all", query = "from Service p")
 public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

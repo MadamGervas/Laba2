@@ -1,9 +1,6 @@
 package Menu;
 
-import dasha.Materials;
-import dasha.Specialization;
-import dasha.Staff;
-import dasha.StaffTransfer;
+import dasha.*;
 import map.*;
 
 import java.io.BufferedReader;
@@ -14,7 +11,11 @@ import java.sql.Date;
 public class Menu {
     private ClientsMap clientsMap;
     private MaterialsMap materialsMap;
+    private MastersMap masterMap;
     private ServiceMap serviceMap;
+    private ServiceClientsMap serviceClientsMap;
+    private MasterMaterialsMap masterMaterialsMap;
+    private MasterSpecializationMap masterSpecializationMap;
 
     private SpecializationMap specializationMap;
     private StaffTransferMap staffTransferMap;
@@ -33,7 +34,10 @@ public class Menu {
 
     private void createCLI() throws IOException {
         clientsMap = new ClientsMap();
-//        mastersMapper = new MastersMapper();
+        masterMap = new MastersMap();
+        serviceClientsMap = new ServiceClientsMap();
+        masterMaterialsMap = new MasterMaterialsMap();
+        masterSpecializationMap = new MasterSpecializationMap();
         materialsMap = new MaterialsMap();
         staffTransferMap = new StaffTransferMap();
         serviceMap = new ServiceMap();
@@ -52,10 +56,10 @@ public class Menu {
             }
 
             switch (answer) {
-                case 1: { // MovingInformation
+                case 1: {
                     boolean insideMenu = true;
                     while (insideMenu) {
-                        menuInsideMovingInformation();
+                        menuInsideStaffTransfer();
                         try {
                             insideAnswer = Integer.parseInt(write());
                         } catch (IOException e) {
@@ -68,7 +72,7 @@ public class Menu {
                                     System.out.println((i + 1) + ". " + staffTransferMap.findAll().get(i));
                                 }
                                 break;
-                            } //Write moving information
+                            }
 
                             case 2: {
                                 StaffTransfer staffTransfer = new StaffTransfer();
@@ -83,7 +87,7 @@ public class Menu {
                                 staffTransferMap.save(staffTransfer);
 
                                 break;
-                            } //Add a moving information
+                            }
 
                             case 3: {
                                 boolean isEdit = true;
@@ -97,7 +101,7 @@ public class Menu {
                                     break;
                                 StaffTransfer staffTransferEdit = staffTransferMap.findAll().get(id - 1);
                                 while (isEdit) {
-                                    movingInformationEdit();
+                                    staffTransferEdit();
                                     System.out.println("Write what are you want to edit: ");
                                     int editKey = Integer.parseInt(write());
                                     switch (editKey) {
@@ -105,24 +109,24 @@ public class Menu {
                                             System.out.println("Write new position: ");
                                             staffTransferEdit.setPosition(write());
                                             break;
-                                        } // edit Position
+                                        }
                                         case 2: {
                                             System.out.println("Write new transfer reason: ");
                                             staffTransferEdit.setReason(write());
                                             break;
-                                        } // edit Transfer reason
+                                        }
 
                                         case 3: {
                                             System.out.println("Write new number of order: ");
                                             staffTransferEdit.setNumber(write());
                                             break;
-                                        } // edit Order number
+                                        }
 
                                         case 4: {
                                             System.out.println("Write new date of order (yyyy-mm-dd): ");
                                             staffTransferEdit.setOrderDate(Date.valueOf(write()));
                                             break;
-                                        } // edit Date of order
+                                        }
 
                                         default: {
                                             isEdit = false;
@@ -134,7 +138,7 @@ public class Menu {
 
                                 staffTransferMap.edit(staffTransferEdit);
                                 break;
-                            } // Edit a moving information
+                            }
 
                             case 4: {
                                 for (int i = 0; i < staffTransferMap.findAll().size(); i++) {
@@ -146,28 +150,23 @@ public class Menu {
                                     break;
                                 staffTransferMap.delete(staffTransferMap.findAll().get(id - 1));
                                 break;
-                            } //Delete moving information
+                            }
 
                             case 5: {
                                 boolean isFind = true;
                                 while (isFind) {
-                                    movingInformationFind();
+                                    staffTransferFind();
                                     System.out.println("Write what are you want to find: ");
                                     int infoKey = Integer.parseInt(write());
-                                    /*
-                                    *  System.out.println("1. Position");
-                                        System.out.println("2. Transfer reason");
-                                        System.out.println("3. Order number");
-                                        System.out.println("4. Date of order");
-                                    * */
+
                                     switch (infoKey) {
                                         case 1: {
                                             System.out.println("Write: ");
-                                            for (StaffTransfer movingInformation :  staffTransferMap.findAllByPosition(write())) {
+                                            for (StaffTransfer movingInformation : staffTransferMap.findAllByPosition(write())) {
                                                 System.out.println(movingInformation);
                                             }
                                             break;
-                                        } // find Position
+                                        }
 
                                         case 2: {
                                             System.out.println("Write: ");
@@ -176,7 +175,7 @@ public class Menu {
                                             }
 
                                             break;
-                                        }//find Transfer reason
+                                        }
 
                                         case 3: {
                                             System.out.println("Write: ");
@@ -185,7 +184,7 @@ public class Menu {
                                             }
 
                                             break;
-                                        }//find Order number
+                                        }
 
                                         case 4: {
                                             System.out.println("Write: ");
@@ -194,7 +193,7 @@ public class Menu {
                                             }
 
                                             break;
-                                        }//find ODate of order
+                                        }
 
                                         default: {
                                             isFind = false;
@@ -204,7 +203,7 @@ public class Menu {
                                 }
                                 break;
 
-                            } //  Find field in moving information
+                            }
                             default: {
                                 insideMenu = false;
                                 break;
@@ -213,9 +212,9 @@ public class Menu {
 
                     }
 
-
+                    break;
                 }
-                case 2: { // Staff
+                case 2: {
                     boolean insideMenu = true;
                     while (insideMenu) {
                         menuInsideStaff();
@@ -231,7 +230,7 @@ public class Menu {
                                     System.out.println((i + 1) + ". " + staffMap.findAll().get(i));
                                 }
                                 break;
-                            } //Write staff
+                            }
 
                             case 2: {
                                 Staff staff = new Staff();
@@ -250,26 +249,26 @@ public class Menu {
                                 System.out.println("Write salary of staff: ");
                                 staff.setSalary(Integer.valueOf(write()));
 
-                                for (int i = 0; i <  staffTransferMap.findAll().size(); i++) {
-                                    System.out.println((i + 1) + ". " +  staffTransferMap.findAll().get(i).getReason());
+                                for (int i = 0; i < staffTransferMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + staffTransferMap.findAll().get(i).getReason());
                                 }
 
                                 System.out.print("Write transfer reason: ");
                                 staff.setStaffTransferByTransferId(staffTransferMap.findAll().get(Integer.parseInt(write()) - 1));
                                 staffMap.save(staff);
                                 break;
-                            } //Add a staff
+                            }
 
                             case 3: {
                                 boolean isEdit = true;
-                                for (int i = 0; i <  staffMap.findAll().size(); i++) {
-                                    System.out.println((i + 1) + ". " +  staffMap.findAll().get(i));
+                                for (int i = 0; i < staffMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + staffMap.findAll().get(i));
                                 }
                                 System.out.print("What staff you want to edit (0 to exit): ");
                                 int id = Integer.parseInt(write());
                                 if (id == 0)
                                     break;
-                                Staff staffEdit =  staffMap.findAll().get(id - 1);
+                                Staff staffEdit = staffMap.findAll().get(id - 1);
                                 while (isEdit) {
                                     staffEdit();
                                     System.out.println("Write what are you want to edit: ");
@@ -280,43 +279,43 @@ public class Menu {
                                             System.out.println("Write a new surname: ");
                                             staffEdit.setSurname(write());
                                             break;
-                                        } //Surname
+                                        }
 
                                         case 2: {
                                             System.out.println("Write a new name: ");
                                             staffEdit.setName(write());
                                             break;
-                                        } //Name
+                                        }
 
                                         case 3: {
                                             System.out.println("Write a new patronymic: ");
                                             staffEdit.setPatronymic(write());
                                             break;
-                                        } // Patronymic
+                                        }
 
                                         case 4: {
                                             System.out.println("Write a new address: ");
                                             staffEdit.setAddress(write());
                                             break;
-                                        } // Address
+                                        }
 
                                         case 5: {
                                             System.out.println("Write a new date of birth (yyyy-mm-dd): ");
                                             staffEdit.setDateOfBirth(Date.valueOf(write()));
                                             break;
-                                        } // Date of birth
+                                        }
 
                                         case 6: {
                                             System.out.println("Write a new position: ");
                                             staffEdit.setPosition(write());
                                             break;
-                                        } // Position
+                                        }
 
                                         case 7: {
                                             System.out.println("Write a new staff's salary: ");
                                             staffEdit.setSalary(Integer.valueOf(write()));
                                             break;
-                                        } // Salary
+                                        }
 
                                         default: {
                                             isEdit = false;
@@ -327,7 +326,7 @@ public class Menu {
                                 }
                                 staffMap.edit(staffEdit);
                                 break;
-                            }  //Edit a staff
+                            }
 
                             case 4: {
                                 for (int i = 0; i < staffMap.findAll().size(); i++) {
@@ -339,7 +338,7 @@ public class Menu {
                                     break;
                                 staffMap.delete(staffMap.findAll().get(id - 1));
                                 break;
-                            } //Delete staff
+                            }
 
                             case 5: {
                                 boolean isFind = true;
@@ -354,7 +353,7 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find Surname
+                                        }
 
                                         case 2: {
                                             System.out.println("Write: ");
@@ -362,15 +361,15 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find Name
+                                        }
 
                                         case 3: {
                                             System.out.println("Write: ");
-                                            for (Staff staff :  staffMap.findAllByPatronymic(write())) {
+                                            for (Staff staff : staffMap.findAllByPatronymic(write())) {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find patronymic
+                                        }
 
                                         case 4: {
                                             System.out.println("Write: ");
@@ -378,7 +377,7 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find address
+                                        }
 
                                         case 5: {
                                             System.out.println("Write: ");
@@ -386,7 +385,7 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find date of birth
+                                        }
 
                                         case 6: {
                                             System.out.println("Write: ");
@@ -394,7 +393,7 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find position
+                                        }
 
                                         case 7: {
                                             System.out.println("Write: ");
@@ -402,7 +401,7 @@ public class Menu {
                                                 System.out.println(staff);
                                             }
                                             break;
-                                        } // Find salary
+                                        }
 
                                         default: {
                                             isFind = false;
@@ -414,7 +413,7 @@ public class Menu {
 
 
                                 break;
-                            } //  Find field in staff
+                            }
 
 
                             default: {
@@ -426,98 +425,176 @@ public class Menu {
                     }
                     break;
                 }
-//                case 3: { // Masters
-//                    boolean insideMenu = true;
-//                    while (insideMenu) {
-//                        menuInsideMasters();
-//                        try {
-//                            insideAnswer = Integer.parseInt(write());
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//
-//                        switch (insideAnswer) {
-//                            case 1: {
-//                                var masters = mastersMapper.findAll();
-//                                for (int i = 0; i < masters.size(); i++) {
-//                                    System.out.println((i + 1) + ". " + masters.get(i));
-//                                }
-//                                break;
-//                            } //Write Master
-//
-//                            case 2: {
-//                                Masters masters = new Masters();
-//                                System.out.println("Write surname: ");
-//                                masters.setSurname(write());
-//                                mastersMapper.save(masters);
-//                                break;
-//                            }//Save master
-//
-//                            case 3: {
-//                                var masters = mastersMapper.findAll();
-//                                for (int i = 0; i < masters.size(); i++) {
-//                                    System.out.println((i + 1) + ". " + masters.get(i));
-//                                }
-//                                System.out.print("What master you want to edit (0 to exit): ");
-//                                int id = Integer.parseInt(write());
-//                                if (id == 0)
-//                                    break;
-//                                Masters mastersEdit = masters.get(id - 1);
-//                                System.out.println("Write new position: ");
-//                                mastersEdit.setSurname(write());
-//                                mastersMapper.edit(mastersEdit);
-//                                break;
-//                            } // Edit master
+                case 3: {
+                    boolean insideMenu = true;
+                    while (insideMenu) {
+                        menuInsideMasters();
+                        try {
+                            insideAnswer = Integer.parseInt(write());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
 
-//                            case 4: {
-//                                var masters = mastersMapper.findAll();
-//                                for (int i = 0; i < masters.size(); i++) {
-//                                    System.out.println((i + 1) + ". " + masters.get(i));
-//                                }
-//                                System.out.print("What master you want to delete (0 to exit): ");
-//                                int id = Integer.parseInt(write());
-//                                if (id == 0)
-//                                    break;
-//                                mastersMapper.delete(masters.get(id - 1));
-//                                break;
-//                            } //delete master
-//
-//                            case 5: {
-//                                boolean isFind = true;
-//                                while (isFind) {
-//                                    mastersFind();
-//                                    System.out.println("Write what are you want to find: ");
-//                                    int infoKey = Integer.parseInt(write());
-//
-//                                    switch (infoKey) {
-//                                        case 1: {
-//                                            System.out.println("Write: ");
-//                                            var masterFind = mastersMapper.findAllBySurname(write());
-//                                            for (Masters masters : masterFind) {
-//                                                System.out.println(masters);
-//                                            }
-//                                            break;
-//                                        } // find surname
-//
-//                                        default: {
-//                                            isFind = false;
-//                                            break;
-//                                        }
-//                                    }
-//                                }
-//                                break;
-//                            }
-//                            default: {
-//                                insideMenu = false;
-//                                break;
-//                            }
-//                        }
-//
-//                    }
-//                    break;
-//
-//                }
-                case 4: { // Materials
+                        switch (insideAnswer) {
+                            case 1: {
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i));
+                                }
+                                break;
+                            }
+
+                            case 2: {
+                                Master masters = new Master();
+                                for (int i = 0; i < staffMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + staffMap.findAll().get(i));
+                                }
+                                System.out.print("Write staff number: ");
+                                masters.setStaffByStaffId(staffMap.findAll().get(Integer.parseInt(write()) - 1));
+                                masterMap.save(masters);
+                                break;
+                            }
+
+                            case 3: {
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i));
+                                }
+                                System.out.print("What master you want to edit (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                Master mastersEdit = masterMap.findAll().get(id - 1);
+
+                                for (int i = 0; i < staffMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + staffMap.findAll().get(i).getSurname() +
+                                            staffMap.findAll().get(i).getName() + staffMap.findAll().get(i).getPatronymic() + staffMap.findAll().get(i).getPosition());
+                                }
+                                System.out.print("Choose staff: ");
+                                mastersEdit.setStaffByStaffId(staffMap.findAll().get(Integer.parseInt(write()) - 1));
+
+                                masterMap.edit(mastersEdit);
+                                break;
+                            }
+
+                            case 4: {
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i));
+                                }
+                                System.out.print("What master you want to delete (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                masterMap.delete(masterMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            case 5: {
+                                boolean isFind = true;
+                                while (isFind) {
+                                    mastersFind();
+                                    System.out.println("Write what are you want to find: ");
+                                    int infoKey = Integer.parseInt(write());
+
+                                    switch (infoKey) {
+                                        case 1: {
+
+                                            for (int i = 0; i < staffMap.findAll().size(); i++) {
+                                                System.out.println((i + 1) + ". " + staffMap.findAll().get(i));
+                                            }
+                                            System.out.println("Choose staff: ");
+                                            Staff staff = staffMap.findAll().get(Integer.parseInt(write()) - 1);
+
+                                            for (Master master :
+                                                    masterMap.findByStaff(staff)) {
+                                                System.out.println(master);
+                                            }
+
+                                            break;
+                                        }
+
+                                        default: {
+                                            isFind = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+
+                            case 6: {
+                                MasterSpecialization masterSpecialization = new MasterSpecialization();
+
+                                for (int i = 0; i < specializationMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + specializationMap.findAll().get(i));
+                                }
+                                System.out.print("Write specialization number: ");
+                                masterSpecialization.setSpecializationBySpecializationId(specializationMap.findAll().get(Integer.parseInt(write()) - 1));
+
+
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i));
+                                }
+                                System.out.print("Write masters number: ");
+                                masterSpecialization.setMasterByMasterId(masterMap.findAll().get(Integer.parseInt(write()) - 1));
+
+                                masterSpecializationMap.save(masterSpecialization);
+
+                                break;
+                            }
+
+                            case 7: {
+                                for (int i = 0; i < masterSpecializationMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterSpecializationMap.findAll().get(i));
+                                }
+                                System.out.print("What master's specialization you want to delete (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                masterSpecializationMap.delete(masterSpecializationMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            case 8: {
+                                MasterMaterials mastersMaterials = new MasterMaterials();
+
+                                for (int i = 0; i < materialsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + materialsMap.findAll().get(i));
+                                }
+                                System.out.print("Write materials number: ");
+                                mastersMaterials.setMaterialsByMaterialsId(materialsMap.findAll().get(Integer.parseInt(write()) - 1));
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i));
+                                }
+                                System.out.print("Write masters number: ");
+
+                                mastersMaterials.setMasterByMasterId(masterMap.findAll().get(Integer.parseInt(write()) - 1));
+                                System.out.println("Write count: ");
+                                mastersMaterials.setCount(Integer.parseInt(write()));
+                                masterMaterialsMap.save(mastersMaterials);
+
+                                break;
+                            }
+
+                            case 9: {
+                                for (int i = 0; i < masterMaterialsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMaterialsMap.findAll().get(i));
+                                }
+                                System.out.print("What master's materials you want to delete (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                masterMaterialsMap.delete(masterMaterialsMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            default: {
+                                insideMenu = false;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 4: {
                     boolean insideMenu = true;
                     while (insideMenu) {
                         menuInsideMaterials();
@@ -533,7 +610,7 @@ public class Menu {
                                     System.out.println((i + 1) + ". " + materialsMap.findAll().get(i));
                                 }
                                 break;
-                            } //Write Materials
+                            }
 
                             case 2: {
                                 Materials materials = new Materials();
@@ -545,18 +622,18 @@ public class Menu {
                                 materials.setCost(Integer.valueOf(write()));
                                 materialsMap.save(materials);
                                 break;
-                            } //Add a Materials
+                            }
 
                             case 3: {
                                 boolean isEdit = true;
-                                for (int i = 0; i <  materialsMap.findAll().size(); i++) {
-                                    System.out.println((i + 1) + ". " +  materialsMap.findAll().get(i));
+                                for (int i = 0; i < materialsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + materialsMap.findAll().get(i));
                                 }
                                 System.out.print("What material you want to edit (0 to exit): ");
                                 int id = Integer.parseInt(write());
                                 if (id == 0)
                                     break;
-                                Materials materialEdit =  materialsMap.findAll().get(id - 1);
+                                Materials materialEdit = materialsMap.findAll().get(id - 1);
 
                                 while (isEdit) {
                                     materialsEdit();
@@ -567,18 +644,18 @@ public class Menu {
                                             System.out.println("Write new name: ");
                                             materialEdit.setName(write());
                                             break;
-                                        } // edit Name
+                                        }
                                         case 2: {
                                             System.out.println("Write new unit measurement: ");
                                             materialEdit.setUnitMeasurement(write());
                                             break;
-                                        } // edit unit measurement
+                                        }
 
                                         case 3: {
                                             System.out.println("Write new cost of material: ");
                                             materialEdit.setCost(Integer.valueOf(write()));
                                             break;
-                                        } // edit cost
+                                        }
 
                                         default: {
                                             isEdit = false;
@@ -588,7 +665,7 @@ public class Menu {
                                 }
                                 materialsMap.edit(materialEdit);
                                 break;
-                            } //Edit Material
+                            }
 
                             case 4: {
                                 for (int i = 0; i < materialsMap.findAll().size(); i++) {
@@ -600,7 +677,7 @@ public class Menu {
                                     break;
                                 materialsMap.delete(materialsMap.findAll().get(id - 1));
                                 break;
-                            } //Delete Material
+                            }
 
                             case 5: {
                                 boolean isFind = true;
@@ -616,7 +693,7 @@ public class Menu {
                                                 System.out.println(materials);
                                             }
                                             break;
-                                        } //find name
+                                        }
 
                                         case 2: {
                                             System.out.println("Write: ");
@@ -624,15 +701,15 @@ public class Menu {
                                                 System.out.println(materials);
                                             }
                                             break;
-                                        } //find unit mesurement
+                                        }
 
                                         case 3: {
                                             System.out.println("Write: ");
-                                            for (Materials materials :  materialsMap.findAllByCost(write())) {
+                                            for (Materials materials : materialsMap.findAllByCost(write())) {
                                                 System.out.println(materials);
                                             }
                                             break;
-                                        } //find by cost
+                                        }
 
                                         default: {
                                             isFind = false;
@@ -642,7 +719,7 @@ public class Menu {
                                 }
 
                                 break;
-                            } //Edit material
+                            }
 
                             default: {
                                 insideMenu = false;
@@ -654,7 +731,7 @@ public class Menu {
                     break;
 
                 }
-                case 5: { // Specialization
+                case 5: {
                     boolean insideMenu = true;
                     while (insideMenu) {
                         menuInsideSpecialization();
@@ -670,7 +747,7 @@ public class Menu {
                                     System.out.println((i + 1) + ". " + specializationMap.findAll().get(i));
                                 }
                                 break;
-                            } //Write Specialization
+                            }
 
                             case 2: {
                                 Specialization specialization = new Specialization();
@@ -678,7 +755,7 @@ public class Menu {
                                 specialization.setServicesList(write());
                                 specializationMap.save(specialization);
                                 break;
-                            } //Add Specialization
+                            }
 
                             case 3: {
                                 for (int i = 0; i < specializationMap.findAll().size(); i++) {
@@ -693,7 +770,7 @@ public class Menu {
                                 specializationEdit.setServicesList(write());
                                 specializationMap.edit(specializationEdit);
                                 break;
-                            } //Edit Specialization
+                            }
 
 
                             case 4: {
@@ -707,7 +784,7 @@ public class Menu {
                                 specializationMap.delete(specializationMap.findAll().get(id - 1));
                                 break;
 
-                            } //Delete Specialization
+                            }
 
 
                             case 5: {
@@ -724,7 +801,7 @@ public class Menu {
                                                 System.out.println(specialization);
                                             }
                                             break;
-                                        } // find name of specialiation
+                                        }
                                         default: {
                                             isFind = false;
                                             break;
@@ -733,7 +810,7 @@ public class Menu {
                                 }
                                 break;
 
-                            } //Find Specialization
+                            }
 
                             default: {
                                 insideMenu = false;
@@ -744,10 +821,10 @@ public class Menu {
                     }
                     break;
                 }
-                case 6: { // Order
+                case 6: {
                     boolean insideMenu = true;
                     while (insideMenu) {
-                        menuInsideOrder();
+                        menuInsideService();
                         try {
                             insideAnswer = Integer.parseInt(write());
                         } catch (IOException e) {
@@ -755,14 +832,127 @@ public class Menu {
                         }
 
                         switch (insideAnswer) {
-                            //TODO
+                            case 1: {
+                                for (int i = 0; i < serviceMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + serviceMap.findAll().get(i));
+                                }
+                                break;
+                            }
+
+                            case 2: {
+                                Service service = new Service();
+                                System.out.println("Write name of service");
+                                service.setService(write());
+                                System.out.println("Write price of service");
+                                service.setCost(write());
+
+                                for (int i = 0; i < masterMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + masterMap.findAll().get(i).getStaffByStaffId().getSurname() + " "
+                                            + masterMap.findAll().get(i).getStaffByStaffId().getName() + " "
+                                            + masterMap.findAll().get(i).getStaffByStaffId().getPatronymic());
+                                }
+                                System.out.print("Write master: ");
+                                service.setMasterByMasterId(masterMap.findAll().get(Integer.parseInt(write()) - 1));
+
+                                serviceMap.save(service);
+                                break;
+                            }
+
+                            case 3: {
+                                boolean isEdit = true;
+                                for (int i = 0; i < serviceMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + serviceMap.findAll().get(i));
+                                }
+                                System.out.print("What order you want to edit (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                Service serviceEdit = serviceMap.findAll().get(id - 1);
+                                while (isEdit) {
+                                    serviceEdit();
+                                    System.out.println("Write what are you want to edit: ");
+                                    int editKey = Integer.parseInt(write());
+                                    switch (editKey) {
+
+                                        case 1: {
+                                            System.out.println("Write new service name: ");
+                                            serviceEdit.setService(write());
+                                            break;
+                                        }
+
+                                        case 2: {
+                                            System.out.println("Write new price of service: ");
+                                            serviceEdit.setCost(write());
+                                            break;
+                                        }
+
+                                        default: {
+                                            isEdit = false;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                serviceMap.edit(serviceEdit);
+                                break;
+                            }
+
+                            case 4: {
+                                for (int i = 0; i < serviceMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + serviceMap.findAll().get(i));
+                                }
+                                System.out.print("What order you want to delete (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                serviceMap.delete(serviceMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            case 5: {
+                                boolean isFind = true;
+                                while (isFind) {
+                                    serviceFind();
+                                    System.out.println("Write what are you want to find: ");
+                                    int infoKey = Integer.parseInt(write());
+                                    switch (infoKey) {
+                                        case 1: {
+                                            System.out.println("Write: ");
+                                            for (Service service : serviceMap.findAllByName(write())) {
+                                                System.out.println(service);
+                                            }
+                                            break;
+                                        }
+
+                                        case 2: {
+                                            System.out.println("Write: ");
+                                            for (Service service : serviceMap.findAllByCost(write())) {
+                                                System.out.println(service);
+                                            }
+                                            break;
+                                        }
+
+                                        default: {
+                                            isFind = false;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                                break;
+                            }
+
+                            default: {
+                                insideMenu = false;
+                                break;
+                            }
                         }
 
                     }
                     break;
 
                 }
-                case 7: { // Client
+                case 7: {
                     boolean insideMenu = true;
                     while (insideMenu) {
                         menuInsideClients();
@@ -773,9 +963,180 @@ public class Menu {
                         }
 
                         switch (insideAnswer) {
-                            //TODO
-                        }
+                            case 1: {
+                                for (int i = 0; i < clientsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + clientsMap.findAll().get(i));
+                                }
+                                break;
+                            }
 
+                            case 2: {
+                                Clients clients = new Clients();
+                                System.out.println("Write surname of client: ");
+                                clients.setSurname(write());
+                                System.out.println("Write name of client: ");
+                                clients.setName(write());
+                                System.out.println("Write patronymic of client: ");
+                                clients.setPatronymic(write());
+                                System.out.println("Write phone number of client: ");
+                                clients.setPhoneNumber(write());
+
+                                clientsMap.save(clients);
+                                break;
+                            }
+
+                            case 3: {
+                                boolean isEdit = true;
+                                for (int i = 0; i < clientsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + clientsMap.findAll().get(i));
+                                }
+                                System.out.print("What client you want to edit (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                Clients clientEdit = clientsMap.findAll().get(id - 1);
+                                while (isEdit) {
+                                    clientEdit();
+                                    System.out.println("Write what are you want to edit: ");
+                                    int editKey = Integer.parseInt(write());
+                                    switch (editKey) {
+
+                                        case 1: {
+                                            System.out.println("Write new surname: ");
+                                            clientEdit.setSurname(write());
+                                            break;
+                                        }
+
+                                        case 2: {
+                                            System.out.println("Write new name: ");
+                                            clientEdit.setName(write());
+                                            break;
+                                        }
+
+                                        case 3: {
+                                            System.out.println("Write new patronymic: ");
+                                            clientEdit.setPatronymic(write());
+                                            break;
+                                        }
+
+                                        case 4: {
+                                            System.out.println("Write new phone number of client: ");
+                                            clientEdit.setPhoneNumber(write());
+                                            break;
+                                        }
+
+                                        default: {
+                                            isEdit = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                clientsMap.edit(clientEdit);
+                                break;
+                            }
+
+                            case 4: {
+                                for (int i = 0; i < clientsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + clientsMap.findAll().get(i));
+                                }
+                                System.out.print("What client you want to delete (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                clientsMap.delete(clientsMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            case 5: {
+                                boolean isFind = true;
+                                while (isFind) {
+                                    clientFind();
+                                    System.out.println("Write what are you want to find: ");
+                                    int infoKey = Integer.parseInt(write());
+                                    switch (infoKey) {
+
+                                        case 1: {
+                                            System.out.println("Write: ");
+                                            for (Clients clients : clientsMap.findAllBySurname(write())) {
+                                                System.out.println(clients);
+                                            }
+                                            break;
+                                        }
+
+                                        case 2: {
+                                            System.out.println("Write: ");
+                                            for (Clients clients : clientsMap.findAllByName(write())) {
+                                                System.out.println(clients);
+                                            }
+                                            break;
+                                        }
+
+                                        case 3: {
+                                            System.out.println("Write: ");
+                                            for (Clients clients : clientsMap.findAllByPatronymic(write())) {
+                                                System.out.println(clients);
+                                            }
+                                            break;
+                                        }
+
+                                        case 4: {
+                                            System.out.println("Write: ");
+                                            for (Clients clients : clientsMap.findAllByPhoneNumber(write())) {
+                                                System.out.println(clients);
+                                            }
+                                            break;
+                                        }
+
+                                        default: {
+                                            isFind = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+
+                            case 6: {
+                                ServiceClients orderDate = new ServiceClients();
+
+                                for (int i = 0; i < serviceMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + serviceMap.findAll().get(i));
+                                }
+                                System.out.print("Write order's number: ");
+                                orderDate.setServiceByServiceId(serviceMap.findAll().get(Integer.parseInt(write()) - 1));
+
+
+                                for (int i = 0; i < clientsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + clientsMap.findAll().get(i));
+                                }
+                                System.out.print("Write client's number: ");
+                                orderDate.setClientsByClientId(clientsMap.findAll().get(Integer.parseInt(write()) - 1));
+
+                                System.out.println("Write date od order (yyyy-mm-dd): ");
+                                orderDate.setServiceTime(Date.valueOf(write()));
+
+                                serviceClientsMap.save(orderDate);
+
+                                break;
+                            }
+
+                            case 7: {
+                                for (int i = 0; i < serviceClientsMap.findAll().size(); i++) {
+                                    System.out.println((i + 1) + ". " + serviceClientsMap.findAll().get(i));
+                                }
+                                System.out.print("What order you want to delete from client (0 to exit): ");
+                                int id = Integer.parseInt(write());
+                                if (id == 0)
+                                    break;
+                                serviceClientsMap.delete(serviceClientsMap.findAll().get(id - 1));
+                                break;
+                            }
+
+                            default: {
+                                insideMenu = false;
+                                break;
+                            }
+                        }
                     }
 
                     break;
@@ -791,42 +1152,42 @@ public class Menu {
     private void chooseMainMenu() {
         System.out.println("Beauty Salon");
         System.out.println("----------------------");
-        System.out.println("1. Moving Information");
+        System.out.println("1. Staff transfer");
         System.out.println("2. Staff");
         System.out.println("3. Masters");
         System.out.println("4. Materials");
         System.out.println("5. Specialization");
-        System.out.println("6. Order");
+        System.out.println("6. Service");
         System.out.println("7. Client");
         System.out.println("0. Exit");
         System.out.println("Enter the item");
     }
 
-    private void menuInsideMovingInformation() {
-        System.out.println("Moving Information");
-        System.out.println("1. List all moving information");
-        System.out.println("2. Add a moving information");
-        System.out.println("3. Edit a moving information");
-        System.out.println("4. Delete moving information");
-        System.out.println("5. Find field in moving information");
+    private void menuInsideStaffTransfer() {
+        System.out.println("Staff transfer");
+        System.out.println("1. List all staff transfer");
+        System.out.println("2. Add a staff transfer");
+        System.out.println("3. Edit a staff transfer");
+        System.out.println("4. Delete staff transfer");
+        System.out.println("5. Find field in staff transfer");
         System.out.println("0. Back");
     }
 
-    private void movingInformationEdit() {
+    private void staffTransferEdit() {
         System.out.println("What are you want to edit?");
         System.out.println("1. Position");
         System.out.println("2. Transfer reason");
-        System.out.println("3. Order number");
-        System.out.println("4. Date of order");
+        System.out.println("3. Number");
+        System.out.println("4. Order date");
         System.out.println("0. Back");
     }
 
-    private void movingInformationFind() {
+    private void staffTransferFind() {
         System.out.println("What are you want to find from?");
         System.out.println("1. Position");
         System.out.println("2. Transfer reason");
-        System.out.println("3. Order number");
-        System.out.println("4. Date of order");
+        System.out.println("3. Number");
+        System.out.println("4. Order date");
         System.out.println("0. Back");
     }
 
@@ -871,9 +1232,14 @@ public class Menu {
         System.out.println("3. Edit a master");
         System.out.println("4. Delete master");
         System.out.println("5. Find field in master");
+        System.out.println("6. Add specialization to master");
+        System.out.println("7. Remove specialization from master");
+        System.out.println("8. Add materials to master");
+        System.out.println("9. Remove materials from master");
         System.out.println("0. Back");
     }
 
+    //todo - что делать с этим если там еще он и тута
     private void mastersFind() {
         System.out.println("What are you want to find from?");
         System.out.println("1. Surname");
@@ -922,13 +1288,28 @@ public class Menu {
         System.out.println("0. Back");
     }
 
-    private void menuInsideOrder() {
-        System.out.println("Order");
-        System.out.println("1. List all orders");
-        System.out.println("2. Add a order");
-        System.out.println("3. Edit a order");
-        System.out.println("4. Delete order");
-        System.out.println("5. Find field in order");
+
+    private void serviceEdit() {
+        System.out.println("What are you want to edit?");
+        System.out.println("1. Name of service");
+        System.out.println("2. Price of service");
+        System.out.println("0. Back");
+    }
+
+    private void serviceFind() {
+        System.out.println("What are you want to find?");
+        System.out.println("1. Name of service");
+        System.out.println("2. Price of service");
+        System.out.println("0. Back");
+    }
+
+    private void menuInsideService() {
+        System.out.println("Service");
+        System.out.println("1. List all service");
+        System.out.println("2. Add a service");
+        System.out.println("3. Edit a service");
+        System.out.println("4. Delete service");
+        System.out.println("5. Find field in service");
         System.out.println("0. Back");
     }
 
@@ -939,6 +1320,26 @@ public class Menu {
         System.out.println("3. Edit a client");
         System.out.println("4. Delete client");
         System.out.println("5. Find field in client");
+        System.out.println("6. Add order to client");
+        System.out.println("7. Remove order from client");
+        System.out.println("0. Back");
+    }
+
+    private void clientEdit() {
+        System.out.println("What are you want to edit?");
+        System.out.println("1. Surname of client");
+        System.out.println("2. Name of client");
+        System.out.println("3. Patronymic of client");
+        System.out.println("4. Phone number of client");
+        System.out.println("0. Back");
+    }
+
+    private void clientFind() {
+        System.out.println("What are you want to find?");
+        System.out.println("1. Surname of client");
+        System.out.println("2. Name of client");
+        System.out.println("3. Patronymic of client");
+        System.out.println("4. Phone number of client");
         System.out.println("0. Back");
     }
 }

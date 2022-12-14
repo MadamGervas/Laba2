@@ -2,9 +2,10 @@ package dasha;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
+import java.util.List;
 
 @Entity
+@org.hibernate.annotations.NamedQuery(name = "Master.all", query = "from Master p")
 public class Master {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -14,11 +15,11 @@ public class Master {
     @JoinColumn(name = "staff_id", referencedColumnName = "id")
     private Staff staffByStaffId;
     @OneToMany(mappedBy = "masterByMasterId")
-    private Collection<MasterMaterials> masterMaterialsById;
+    private List<MasterMaterials> masterMaterialsById;
     @OneToMany(mappedBy = "masterByMasterId")
-    private Collection<MasterSpecialization> masterSpecializationsById;
+    private List<MasterSpecialization> masterSpecializationsById;
     @OneToMany(mappedBy = "masterByMasterId")
-    private Collection<Service> servicesById;
+    private List<Service> servicesById;
 
     public int getId() {
         return id;
@@ -54,27 +55,58 @@ public class Master {
         this.staffByStaffId = staffByStaffId;
     }
 
-    public Collection<MasterMaterials> getMasterMaterialsById() {
+    public List<MasterMaterials> getMasterMaterialsById() {
         return masterMaterialsById;
     }
 
-    public void setMasterMaterialsById(Collection<MasterMaterials> masterMaterialsById) {
+    public void setMasterMaterialsById(List<MasterMaterials> masterMaterialsById) {
         this.masterMaterialsById = masterMaterialsById;
     }
 
-    public Collection<MasterSpecialization> getMasterSpecializationsById() {
+    public List<MasterSpecialization> getMasterSpecializationsById() {
         return masterSpecializationsById;
     }
 
-    public void setMasterSpecializationsById(Collection<MasterSpecialization> masterSpecializationsById) {
+    public void setMasterSpecializationsById(List<MasterSpecialization> masterSpecializationsById) {
         this.masterSpecializationsById = masterSpecializationsById;
     }
 
-    public Collection<Service> getServicesById() {
+    public List<Service> getServicesById() {
         return servicesById;
     }
 
-    public void setServicesById(Collection<Service> servicesById) {
+    public void setServicesById(List<Service> servicesById) {
         this.servicesById = servicesById;
     }
+
+    @Override
+    public String toString() {
+        String specializations = "Specializations: ";
+        int i = 1;
+        for (MasterSpecialization specialization :
+                masterSpecializationsById) {
+            specializations += "\n" + i + ") " + specialization.getSpecializationBySpecializationId().getServicesList() + " ";
+            i += 1;
+        }
+
+        String materialsName = "Materials: ";
+        int j = 1;
+        for (MasterMaterials materials :
+                masterMaterialsById) {
+            materialsName += "\n" + j + ") " +
+                    materials.getMaterialsByMaterialsId().getName() +
+                    " " + materials.getMaterialsByMaterialsId().getUnitMeasurement() +
+                    " " + materials.getCount() + " pieces";
+            j += 1;
+        }
+        specializations += "\n";
+        materialsName += "\n";
+
+        return staffByStaffId.getSurname() +
+                " " + staffByStaffId.getName() +
+                " " + staffByStaffId.getPatronymic() +
+                "\n" + specializations +
+                "\n" + materialsName;
+    }
+
 }

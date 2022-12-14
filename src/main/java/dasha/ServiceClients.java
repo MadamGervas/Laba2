@@ -5,19 +5,20 @@ import jakarta.persistence.*;
 import java.sql.Date;
 
 @Entity
+@org.hibernate.annotations.NamedQuery(name = "ServiceClients.all", query = "from ServiceClients p")
 @Table(name = "service_clients", schema = "public", catalog = "salon")
 public class ServiceClients {
     @Basic
     @Column(name = "service_time")
     private Date serviceTime;
+    @Id
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Clients clientsByClientId;
+    @Id
     @ManyToOne
     @JoinColumn(name = "service_id", referencedColumnName = "id")
     private Service serviceByServiceId;
-    @Id
-    private Long id;
 
 
     public Date getServiceTime() {
@@ -57,11 +58,10 @@ public class ServiceClients {
         this.serviceByServiceId = serviceByServiceId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
+    @Override
+    public String toString() {
+        return  serviceByServiceId.getService() +
+                ", " + serviceTime + ", " + clientsByClientId.getSurname() + " "+
+                clientsByClientId.getName() + " " + clientsByClientId.getPatronymic();
     }
 }
